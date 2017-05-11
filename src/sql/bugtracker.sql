@@ -1,0 +1,36 @@
+/*sequences*/
+create sequence employee_seq
+MINVALUE 1
+start with 1
+MAXVALUE 2000
+INCREMENT BY 1
+NOCACHE
+NOCYCLE
+NOORDER;
+
+create sequence project_seq
+MINVALUE 2001
+start with 2001
+MAXVALUE 2200
+INCREMENT BY 1
+NOCACHE
+NOCYCLE
+NOORDER;
+
+create sequence task_seq
+MINVALUE 2200
+start with 2200
+MAXVALUE 50000
+INCREMENT BY 1
+NOCACHE
+NOCYCLE
+NOORDER;
+
+create sequence comment_seq
+MINVALUE 50001
+start with 50001
+MAXVALUE 120000
+INCREMENT BY 1
+NOCACHE
+NOCYCLE
+NOORDER;
