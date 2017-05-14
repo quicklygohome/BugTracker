@@ -1,5 +1,7 @@
 package dataModel;
 
+import com.sun.rowset.CachedRowSetImpl;
+import com.sun.rowset.internal.Row;
 import entities.Task;
 import entities.TaskPriority;
 import entities.TaskState;
@@ -10,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -58,15 +61,22 @@ public class TaskDaoImpl extends AbstractDao<Task, Long>{
     }
 
     @Override
-    protected List<Task> parseResultSet(ResultSet rs) {
+    protected List<Task> parseRowSet(CachedRowSetImpl crs) {
         List<Task> result = new ArrayList<>();
         try {
-            while (rs.next()){
-                Task task = new Task(rs.getLong("ID"), rs.getString("TASKNAME"),
-                        TaskType.valueOf(rs.getString("TYPE")), TaskState.valueOf(rs.getString("STATE")),
-                        rs.getString("DESCRIPTION"), TaskPriority.valueOf(rs.getString("PRIORITY")),
-                        rs.getLong("PROJECT_ID"));
-                result.add(task);
+            if (crs.next()) {
+                Collection<Row> rows = (Collection<Row>) crs.toCollection();
+                for (Row row : rows) {
+                    long tId = (long) row.getColumnObject(1);
+                    String tName = (String) row.getColumnObject(2);
+                    String type = (String) row.getColumnObject(3);
+                    String state = (String) row.getColumnObject(4);
+                    String descr = (String) row.getColumnObject(5);
+                    String priority = (String) row.getColumnObject(6);
+                    long pId = (long) row.getColumnObject(13);
+                    Task task = new Task(tId, tName, type, state, descr, priority, pId);
+                    result.add(task);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -1,17 +1,18 @@
 package dataModel;
 
+import com.sun.rowset.CachedRowSetImpl;
+import com.sun.rowset.internal.Row;
 import entities.Project;
+import entities.Task;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by Sasha on 02.05.2017.
- */
 public class ProjectDaoImpl extends AbstractDao<Project, Long> {
 
     public ProjectDaoImpl(Connection connection) {
@@ -53,12 +54,18 @@ public class ProjectDaoImpl extends AbstractDao<Project, Long> {
     }
 
     @Override
-    protected List<Project> parseResultSet(ResultSet rs) {
+    protected List<Project> parseRowSet(CachedRowSetImpl crs) {
         List<Project> result = new ArrayList<>();
         try {
-            while (rs.next()){
-                Project project = new Project(rs.getLong("ID"), rs.getString("PROJECTNAME"), rs.getLong("HEAD_ID"));
-                result.add(project);
+            if (crs.next()){
+                Collection<Row> rows = (Collection<Row>) crs.toCollection();
+                for (Row row : rows) {
+                    long pId = (long) row.getColumnObject(1);
+                    String pName = (String) row.getColumnObject(2);
+                    long headId = (long) row.getColumnObject(3);
+                    Project project = new Project(pId, pName, headId);
+                    result.add(project);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

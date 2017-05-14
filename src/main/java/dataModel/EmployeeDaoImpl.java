@@ -1,12 +1,16 @@
 package dataModel;
 
+import com.sun.rowset.CachedRowSetImpl;
+import com.sun.rowset.internal.Row;
 import entities.Employee;
+import entities.Task;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -53,14 +57,20 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Long> {
     }
 
     @Override
-    protected List<Employee> parseResultSet(ResultSet rs) {
+    protected List<Employee> parseRowSet(CachedRowSetImpl crs) {
         List<Employee> result = new ArrayList<>();
         try {
-            while (rs.next()){
-                boolean isAdmin = (rs.getInt("ISADMIN") == 1);
-                Employee employee = new Employee(rs.getLong("ID"), rs.getString("EMPLOYEENAME"),
-                        rs.getString("EMAIL"), rs.getString("PASSWORD"), isAdmin);
-                result.add(employee);
+            if (crs.next()){
+                Collection<Row> rows = (Collection<Row>) crs.toCollection();
+                for (Row row : rows) {
+                    long eId = (long) row.getColumnObject(1);
+                    String eName = (String) row.getColumnObject(2);
+                    String email = (String) row.getColumnObject(3);
+                    String passw = (String) row.getColumnObject(4);
+                    boolean isAdmin = ((int)row.getColumnObject(5) == 1);
+                    Employee employee = new Employee(eId, eName,email, passw, isAdmin);
+                    result.add(employee);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

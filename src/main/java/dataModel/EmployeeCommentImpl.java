@@ -1,5 +1,6 @@
 package dataModel;
 
+import com.sun.rowset.CachedRowSetImpl;
 import entities.EmployeeComment;
 
 import java.sql.Connection;
@@ -42,7 +43,7 @@ public class EmployeeCommentImpl extends AbstractDao<EmployeeComment,Long> {
     }
 
     @Override
-    protected List<EmployeeComment> parseResultSet(ResultSet rs) {
+    protected List<EmployeeComment> parseRowSet(CachedRowSetImpl crs) {
         return null;
     }
 

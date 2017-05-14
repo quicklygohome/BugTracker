@@ -4,8 +4,6 @@ import com.sun.rowset.CachedRowSetImpl;
 import com.sun.rowset.internal.Row;
 import entities.*;
 
-import javax.sql.RowSetMetaData;
-import javax.sql.rowset.RowSetMetaDataImpl;
 import java.sql.*;
 import java.util.*;
 
@@ -26,7 +24,7 @@ public abstract class AbstractDao<T extends Entity, K extends Long> implements G
 
     public abstract String getDeleteQuery();
 
-    protected abstract List<T> parseResultSet(ResultSet rs);
+    protected abstract List<T> parseRowSet(CachedRowSetImpl crs);
 
     protected abstract void preparedInsertStatement(PreparedStatement statement, T obj);
 
@@ -37,13 +35,15 @@ public abstract class AbstractDao<T extends Entity, K extends Long> implements G
         String query ="SELECT * FROM BUGTRACKER.EMPLOYEE WHERE EMAIL = ? AND PASSWORD = ?";
         PreparedStatement statement = null;
         ResultSet resultSet = null;
+        CachedRowSetImpl crs = null;
         try {
             statement = connection.prepareStatement(query);
             statement.setString(1, email);
             statement.setString(2, password);
             resultSet = statement.executeQuery();
+            crs.populate(resultSet);
             if (resultSet != null){
-                List<Employee> employees = (List<Employee>) parseResultSet(resultSet);
+                List<Employee> employees = (List<Employee>) parseRowSet(crs);
                 result = employees.get(0);
             }
         } catch (SQLException e) {
@@ -89,10 +89,12 @@ public abstract class AbstractDao<T extends Entity, K extends Long> implements G
         T result = null;
         String query = getSelectByIdQuery();
         try {
+            CachedRowSetImpl crs = new CachedRowSetImpl();
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
-            List<T> list = parseResultSet(resultSet);
+            crs.populate(resultSet);
+            List<T> list = parseRowSet(crs);
             result = list.get(0);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -189,8 +191,10 @@ public abstract class AbstractDao<T extends Entity, K extends Long> implements G
         List<T> list = null;
         String sql = getSelectAllQuery();
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            CachedRowSetImpl crs = new CachedRowSetImpl();
             ResultSet rs = statement.executeQuery();
-            list = parseResultSet(rs);
+            crs.populate(rs);
+            list = parseRowSet(crs);
         } catch (Exception e) {
             e.printStackTrace();
         }
