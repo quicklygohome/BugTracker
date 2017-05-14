@@ -1,16 +1,14 @@
 package dataModel;
 
+import com.sun.rowset.CachedRowSetImpl;
+import com.sun.rowset.internal.Row;
 import entities.*;
 
+import javax.sql.RowSetMetaData;
+import javax.sql.rowset.RowSetMetaDataImpl;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-/**
- * Created by Sasha on 02.05.2017.
- */
 public abstract class AbstractDao<T extends Entity, K extends Long> implements GenericDao<T, K>{
     private Connection connection;
 
@@ -102,27 +100,47 @@ public abstract class AbstractDao<T extends Entity, K extends Long> implements G
         return result;
     }
 
-    public Map<String, Task> getTasksByUser(long id){
-        Map<String, Task> taskMap = new HashMap<>();
-        String query = "SELECT BUGTRACKER.TASK.*,PROJECTNAME FROM BUGTRACKER.TASK,BUGTRACKER.PROJECT WHERE BUGTRACKER.TASK.PROJECT_ID=PROJECT.ID AND BUGTRACKER.TASK.ASSIGNEE_ID="+id;
-        Statement statement = null;
+    public Map<String, List<Task>> getTasksByUser(long id){
+        Map<String, List<Task>> taskMap = new HashMap<>();
+        String query = "SELECT BUGTRACKER.TASK.*,PROJECTNAME FROM BUGTRACKER.TASK,BUGTRACKER.PROJECT WHERE BUGTRACKER.TASK.PROJECT_ID=PROJECT.ID AND BUGTRACKER.TASK.ASSIGNEE_ID=?";
+        PreparedStatement statement = null;
         ResultSet rs = null;
+        CachedRowSetImpl crs = null;
         try {
-            statement = connection.createStatement();
-            rs = statement.executeQuery(query);
-            rs.beforeFirst();
-            while (rs.next()){
-                Task task = new Task(rs.getLong("ID"), rs.getString("TASKNAME"),
-                        TaskType.valueOf((rs.getString("TYPE").toUpperCase())), TaskState.valueOf((rs.getString("STATE").toUpperCase())),
-                        rs.getString("DESCRIPTION"), TaskPriority.valueOf((rs.getString("PRIORITY")).toUpperCase()),
-                        rs.getLong("PROJECT_ID"));
-                taskMap.put(rs.getString("PROJECTNAME"), task);
+            crs = new CachedRowSetImpl();
+            statement = connection.prepareStatement(query);
+            statement.setLong(1,id);
+            rs = statement.executeQuery();
+            if (rs != null) {
+                crs.populate(rs);
+                if (crs.next()) {
+                    Collection<Row> rows = (Collection<Row>) crs.toCollection();
+                    for (Row row : rows) {
+                        long tId = (long) row.getColumnObject(1);
+                        String tName = (String) row.getColumnObject(2);
+                        String type = (String) row.getColumnObject(3);
+                        String state = (String) row.getColumnObject(4);
+                        String descr = (String) row.getColumnObject(5);
+                        String priority = (String) row.getColumnObject(6);
+                        long pId = (long) row.getColumnObject(13);
+                        String pName = (String) row.getColumnObject(14);
+                        Task task = new Task(tId, tName, type, state, descr, priority, pId);
+                        if(taskMap.containsKey(pName)){
+                            taskMap.get(pName).add(task);
+                        } else {
+                            List<Task> tasks = new ArrayList<>();
+                            tasks.add(task);
+                            taskMap.put(pName, tasks);
+                        }
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             if (rs!=null){
                 try {
+                    crs.close();
                     rs.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
