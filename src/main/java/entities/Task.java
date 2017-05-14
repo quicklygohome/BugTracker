@@ -24,13 +24,13 @@ public class Task implements Entity{
 
     }
 
-    public Task(long taskId, String taskName, TaskType type, TaskState state, String description, TaskPriority priority, long projectId){
+    public Task(long taskId, String taskName, String type, String state, String description, String priority, long projectId){
         this.taskId = taskId;
         this.taskName = taskName;
-        this.type = type;
-        this.state = state;
+        this.type = TaskType.valueOf(type.toUpperCase());
+        this.state = TaskState.valueOf(state.toUpperCase());
         this.description = description;
-        this.priority = priority;
+        this.priority = TaskPriority.valueOf(priority.toUpperCase());
         this.projectId = projectId;
     }
 
