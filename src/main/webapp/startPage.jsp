@@ -152,12 +152,14 @@
                             <%--<%}%>--%>
                             <%int i=0;%>
                             <c:forEach items="${tasks}" var="task">
-                                <tr>
-                                    <td><%=++i%></td>
-                                    <td><a href="task.jsp">${task.value.getTaskName()}</a></td>
-                                    <td>${task.key}</td>
-                                    <td>${task.value.getPriority().toString()}</td>
-                                </tr>
+                                <c:forEach items="${task.value}" var="item">
+                                    <tr>
+                                        <td><%=++i%></td>
+                                        <td><a href="task.jsp">${item.getTaskName()}</a></td>
+                                        <td>${task.key}</td>
+                                        <td>${item.getPriority().toString()}</td>
+                                    </tr>
+                                </c:forEach>
                             </c:forEach>
                             </tbody>
                         </table>
