@@ -23,31 +23,31 @@ public class EmployeeDaoImpl extends AbstractDao<Employee, Long> {
     }
 
     @Override
-    public Employee create() {
-        Employee employee= new Employee();
-        return persist(employee);
+    public boolean validate(Employee object) {
+        if (readByEmail(object.getEmail())==null) return true;
+        else return false;
     }
 
     @Override
     public String getSelectByIdQuery() {
-        return "SELECT EMPLOYEE_NAME, EMAIL, PASSWORD, ISADMIN FROM BUGTRACKER.EMPLOYEE WHERE ID = ?";
+        return "SELECT * FROM BUGTRACKER.EMPLOYEE WHERE ID = ?";
     }
 
     @Override
     public String getSelectAllQuery() {
-        return "SELECT EMPLOYEE_NAME, EMAIL, PASSWORD, ISADMIN FROM BUGTRACKER.EMPLOYEE";
+        return "SELECT * FROM BUGTRACKER.EMPLOYEE";
     }
 
     @Override
     public String getCreateQuery() {
-        return "INSERT INTO BUGTRACKER.EMPLOYEE(EMPLOYEE_NAME, EMAIL, PASSWORD, ISADMIN, CREATED, CREATEDBY, UPDATED, UPDATEDBY)" +
+        return "INSERT INTO BUGTRACKER.EMPLOYEE(EMPLOYEENAME, EMAIL, PASSWORD, ISADMIN, CREATED, CREATEDBY, UPDATED, UPDATEDBY)" +
                 "VALUES(?,?,?,?, CURRENT_TIMESTAMP(),?," +
                 "CURRENT_TIMESTAMP(),?)";
     }
 
     @Override
     public String getUpdateQuery() {
-        return "UPDATE BUGTRACKER.EMPLOYEE SET EMPLOYEE_NAME = ? EMAIL = ? PASSWORD = ? ISADMIN = ? " +
+        return "UPDATE BUGTRACKER.EMPLOYEE SET EMPLOYEENAME = ? EMAIL = ? PASSWORD = ? ISADMIN = ? " +
                 "UPDATED = CURRENT_TIMESTAMP() UPDATEDBY=? WHERE ID = ?";
     }
 
