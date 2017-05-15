@@ -20,9 +20,8 @@ public class ProjectDaoImpl extends AbstractDao<Project, Long> {
     }
 
     @Override
-    public Project create() {
-        Project project = new Project();
-        return persist(project);
+    public boolean validate(Project object) {
+        return false;
     }
 
     @Override
