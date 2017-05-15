@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <meta charset="utf-8">
@@ -32,6 +33,7 @@
     <![endif]-->
 </head>
 <body>
+<jsp:include page="accounts"/>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -95,11 +97,14 @@
                 <%--<li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>--%>
             </ul>
             <ul class="nav nav-sidebar">
-                <li><a href="">Nav item</a></li>
-                <li><a href="">Nav item again</a></li>
-                <li><a href="">One more nav</a></li>
-                <li><a href="">Another nav item</a></li>
-                <li><a href="">More navigation</a></li>
+                <c:forEach items="${employees}" var="employee">
+                    <li>
+                        <a href="accounts.jsp">
+                            <c:set var="eId" scope="request" value="${employee.getEntityId()}"/>
+                            <c:out value="${employee.getEmployeeName()}"/>
+                        </a>
+                    </li>
+                </c:forEach>
             </ul>
         </div>
 
@@ -116,24 +121,24 @@
                 <div class="form-group row">
                     <div class="col-xs-7">
                         <label for="userName">Name:</label>
-                        <input type="text" class="form-control" id="userName">
+                        <input type="text" class="form-control" id="userName" value="<c:out value="${employees.get(employees.size()-1).getEmployeeName()}"/>" disabled/>
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-xs-7">
                         <label for="email">Email:</label>
-                        <input type="email" class="form-control" id="email">
+                        <input type="email" class="form-control" id="email" value="<c:out value="${employees.get(employees.size()-1).getEmail()}"/>" disabled/>
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-xs-7">
                         <label for="pwd">Password:</label>
-                        <input type="password" class="form-control" id="pwd">
+                        <input type="password" class="form-control" id="pwd" value="<c:out value="${employees.get(employees.size()-1).getPassword()}"/>" disabled/>
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-xs-12">
-                        <label><input type="checkbox"> Is admin</label>
+                        <label><input type="checkbox" value="<c:out value="${employees.get(employees.size()-1).isAdmin()}"/>" disabled> Is admin</label>
                     </div>
                 </div>
                 <div class="form-group row">
