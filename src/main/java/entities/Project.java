@@ -1,5 +1,6 @@
 package entities;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
@@ -12,8 +13,8 @@ public class Project implements Entity{
     private long createdBy;
     private Timestamp updated;
     private long updatedBy;
-    private Timestamp startDate;
-    private Timestamp finishDate;
+    private Date startDate;
+    private Date finishDate;
     private long headId;
 
     public Project(){}
@@ -40,11 +41,11 @@ public class Project implements Entity{
         return headId;
     }
 
-    public Timestamp getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public Timestamp getFinishDate() {
+    public Date getFinishDate() {
         return finishDate;
     }
 
@@ -56,11 +57,11 @@ public class Project implements Entity{
         this.projectName = projectName;
     }
 
-    public void setFinishDate(Timestamp finishDate) {
+    public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
     }
 
-    public void setStartDate(Timestamp startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
