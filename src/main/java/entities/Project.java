@@ -64,6 +64,10 @@ public class Project implements Entity{
         this.startDate = startDate;
     }
 
+    public void setHeadId(long headId) {
+        this.headId = headId;
+    }
+
     @Override
     public Long getEntityId() {
         return projectId;
