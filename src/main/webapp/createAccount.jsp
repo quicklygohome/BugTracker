@@ -84,28 +84,28 @@
         <h1 class="page-header">New User</h1>
         <div class="container">
 
-            <form action="" role="form" class="form-horizontal">
+            <form id="createNewUserForm" action="createNewUser" role="form" class="form-horizontal" method="post">
                 <div class="form-group row">
                     <div class="col-xs-7">
                         <label for="userName">Name:</label>
-                        <input type="text" class="form-control" id="userName">
+                        <input type="text" class="form-control" id="userName" name="employeeName">
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-xs-7">
                         <label for="email">Email:</label>
-                        <input type="email" class="form-control" id="email">
+                        <input type="email" class="form-control" id="email" name="employeeEmail">
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-xs-7">
                         <label for="pwd">Password:</label>
-                        <input type="password" class="form-control" id="pwd">
+                        <input type="password" class="form-control" id="pwd" name="employeePass">
                     </div>
                 </div>
                 <div class="form-group row">
                     <div class="col-xs-12">
-                        <label><input type="checkbox"> Is admin</label>
+                        <label><input type="checkbox" name="isAdmin"> Is admin</label>
                     </div>
                 </div>
                 <div class="form-group row">
