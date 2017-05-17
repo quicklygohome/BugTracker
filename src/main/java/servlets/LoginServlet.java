@@ -20,7 +20,7 @@ public class LoginServlet extends javax.servlet.http.HttpServlet {
             @Override
             public Object execute(DaoFactory factory) {
                 Employee result = null;
-                EmployeeDaoImpl employeeDao = (EmployeeDaoImpl) factory.getDao("EmployeeDaoImpl");
+                EmployeeDaoImpl employeeDao = (EmployeeDaoImpl) factory.getDao(EmployeeDaoImpl.class.getSimpleName());
                 result = employeeDao.logIn(userEmail, userPassword);
                 return result;
             }
@@ -42,8 +42,8 @@ public class LoginServlet extends javax.servlet.http.HttpServlet {
 //            response.getWriter().write(json);
 //            request.setAttribute("pageObjects", objectMap);
 
-//            request.setAttribute("user", employee);
-            request.setAttribute("tasks", map);
+            request.getSession().setAttribute("currentUser", employee);
+            request.getSession().setAttribute("tasks", map);
             request.getRequestDispatcher("startPage.jsp").forward(request,response);
         } else{
             //todo: send error message

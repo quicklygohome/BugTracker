@@ -24,6 +24,7 @@ public class LoadAccountsDataServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Long id = (Long) request.getSession().getAttribute("eId");
         DaoFactory daoFactory = new DaoFactoryImpl();
         List<Employee> employees = (List<Employee>) daoFactory.executeAndClose(new DaoCommand() {
             @Override
@@ -34,7 +35,19 @@ public class LoadAccountsDataServlet extends HttpServlet {
                 return result;
             }
         });
+        Employee currentEmployee = null;
+        if (id==null){
+            currentEmployee = employees.get(employees.size()-1);
+        } else {
+            for (Employee employee : employees){
+                if (id.equals(employee.getEntityId())) {
+                    currentEmployee = employee;
+                    break;
+                }
+            }
+        }
         request.getSession().setAttribute("employees", employees);
+        request.getSession().setAttribute("currentEmployee", currentEmployee);
         response.sendRedirect("accounts.jsp");
     }
 }

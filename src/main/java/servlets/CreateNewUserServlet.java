@@ -36,7 +36,7 @@ public class CreateNewUserServlet extends HttpServlet {
                     employee.setPassword(employeePass);
                     employee.setAdmin(isAdmin);
 
-                    EmployeeDaoImpl employeeDao = (EmployeeDaoImpl) factory.getDao(EmployeeDaoImpl.class.getSimpleName());
+                    EmployeeDaoImpl employeeDao = (EmployeeDaoImpl) factory.getDao(EmployeeDaoImpl.class.getTypeName());
                     if (employeeDao.persist(employee).equals("SUCCESS")) {
                         result = employeeDao.readByEmail(employeeEmail);
                     }
